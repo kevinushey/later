@@ -1,4 +1,4 @@
-# Later -- Scoped Side Effects for R Functions
+# Later -- Scoped Side Effects for R
 
 [![Travis-CI Build Status](https://travis-ci.org/kevinushey/later.svg?branch=master)](https://travis-ci.org/kevinushey/later)
 
