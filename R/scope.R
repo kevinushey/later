@@ -1,0 +1,67 @@
+#' Scope to Directory
+#'
+#' Sets the working directory, and resets it at the end
+#' of the active scope.
+#'
+#' @param directory The working directory to use.
+#'
+#' @export
+scope_dir <- function(directory) {
+  owd <- setwd(directory)
+  defer(setwd(owd), parent.frame())
+}
+
+#' Scope with Environment Variables
+#'
+#' Set environment variables for the current scope, and resets it
+#' at the end of the active scope.
+#'
+#' @param ... Named arguments, mapping environment variable
+#'   names to values.
+#'
+#' @export
+scope_env_vars <- function(...) {
+
+  dots <- list(...)
+  nm <- names(dots)
+
+  if (any(nm == ""))
+    stop("All arguments should be named")
+
+  old <- as.list(Sys.getenv(nm, unset = NA))
+  na <- is.na(old)
+
+  to_restore <- old[!na]
+  to_unset <- old[na]
+
+  Sys.setenv(...)
+
+  defer({
+    Sys.unsetenv(names(to_unset))
+    do.call(Sys.setenv, to_restore)
+  }, parent.frame())
+
+}
+
+#' Scope with R Options
+#'
+#' Set \R options (through \code{options}) and restore at the
+#' end of the active scope.
+#'
+#' @param ... Named arguments, mapping option names to values.
+#'
+#' @export
+scope_options <- function(...) {
+
+  dots <- list(...)
+  nm <- names(dots)
+
+  if (any(nm == ""))
+    stop("All arguments must be named")
+
+  opts <- as.list(do.call(base::options, as.list(nm)))
+
+  options(...)
+  defer(do.call(base::options, opts), parent.frame())
+
+}

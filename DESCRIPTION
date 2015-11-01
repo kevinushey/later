@@ -1,0 +1,11 @@
+Package: later
+Type: Package
+Title: Scoped Side Effects for R Functions
+Version: 0.0.1
+Authors@R: person("Kevin", "Ushey", email = "kevinushey@gmail.com", role = c("aut", "cre"))
+Description: Scoped side effects for R functions.
+License: MIT + file LICENSE
+LazyData: TRUE
+Suggests:
+    testthat
+RoxygenNote: 5.0.0
