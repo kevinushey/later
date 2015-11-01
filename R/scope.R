@@ -8,7 +8,7 @@
 #' @export
 scope_dir <- function(directory) {
   owd <- setwd(directory)
-  defer(setwd(owd), parent.frame())
+  defer_parent(setwd(owd))
 }
 
 #' Scope with Environment Variables
@@ -23,23 +23,20 @@ scope_dir <- function(directory) {
 scope_env_vars <- function(...) {
 
   dots <- list(...)
-  nm <- names(dots)
+  ensure_all_named(dots, "all arguments must be named")
 
-  if (any(nm == ""))
-    stop("All arguments should be named")
+  old <- as.list(Sys.getenv(names(dots), unset = NA))
 
-  old <- as.list(Sys.getenv(nm, unset = NA))
   na <- is.na(old)
-
   to_restore <- old[!na]
   to_unset <- old[na]
 
   Sys.setenv(...)
 
-  defer({
+  defer_parent({
     Sys.unsetenv(names(to_unset))
     do.call(Sys.setenv, to_restore)
-  }, parent.frame())
+  })
 
 }
 
@@ -54,14 +51,11 @@ scope_env_vars <- function(...) {
 scope_options <- function(...) {
 
   dots <- list(...)
-  nm <- names(dots)
+  ensure_all_named(dots, "all arguments must be named")
 
-  if (any(nm == ""))
-    stop("All arguments must be named")
-
-  opts <- as.list(do.call(base::options, as.list(nm)))
+  opts <- as.list(do.call(base::options, as.list(names(dots))))
 
   options(...)
-  defer(do.call(base::options, opts), parent.frame())
+  defer_parent(do.call(base::options, opts))
 
 }

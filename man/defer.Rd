@@ -2,9 +2,12 @@
 % Please edit documentation in R/defer.R
 \name{defer}
 \alias{defer}
+\alias{defer_parent}
 \title{Defer Evaluation of an Expression}
 \usage{
 defer(expr, envir = parent.frame(), priority = c("first", "last"))
+
+defer_parent(expr, priority = c("first", "last"))
 }
 \arguments{
 \item{expr}{An expression to be evaluated.}
@@ -13,7 +16,7 @@ defer(expr, envir = parent.frame(), priority = c("first", "last"))
 Typically, this should be either the current environment or
 a parent frame (accessed through \code{\link{parent.frame}()}).}
 
-\item{priority}{Specify whether if this handler should be executed
+\item{priority}{Specify whether this handler should be executed
 \code{"first"} or \code{"last"}, relative to any other registered
 handlers on this environment.}
 }

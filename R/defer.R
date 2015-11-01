@@ -8,7 +8,7 @@
 #' @param envir Attach exit handlers to this environment.
 #'   Typically, this should be either the current environment or
 #'   a parent frame (accessed through \code{\link{parent.frame}()}).
-#' @param priority Specify whether if this handler should be executed
+#' @param priority Specify whether this handler should be executed
 #'   \code{"first"} or \code{"last"}, relative to any other registered
 #'   handlers on this environment.
 #'
@@ -24,4 +24,10 @@ defer <- function(expr, envir = parent.frame(), priority = c("first", "last")) {
   )
 
   add_handler(envir, call, front)
+}
+
+#' @rdname defer
+#' @export
+defer_parent <- function(expr, priority = c("first", "last")) {
+  defer(expr, parent.frame(2), priority)
 }

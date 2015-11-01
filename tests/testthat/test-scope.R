@@ -34,13 +34,18 @@ test_that("scope_env_vars() sets, resets environment variables", {
 test_that("scope_options() sets, unsets R options", {
 
   warn <- getOption("warn")
+  options(later.dummy.option = NULL)
+
+
   test <- function() {
     expect_true(getOption("warn") == warn)
-    scope_options(warn = 0)
+    scope_options(warn = 0, later.dummy.option = 1)
     expect_true(getOption("warn") == 0)
+    expect_true(getOption("later.dummy.option") == 1)
   }
 
   test()
   expect_true(getOption("warn") == warn)
+  expect_null(getOption("later.dummy.option"))
 
 })
