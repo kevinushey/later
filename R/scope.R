@@ -25,7 +25,7 @@ scope_env_vars <- function(...) {
   dots <- list(...)
   ensure_all_named(dots, "all arguments must be named")
 
-  old <- as.list(Sys.getenv(names(dots), unset = NA))
+  old <- as.list(Sys.getenv(names(dots), unset = NA, names = TRUE))
 
   na <- is.na(old)
   to_restore <- old[!na]

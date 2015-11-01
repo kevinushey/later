@@ -12,4 +12,6 @@ ensure_all_named <- function(object, msg) {
 
   if (!all(nzchar(names(object))))
     stop(msg, call. = FALSE)
+
+  TRUE
 }

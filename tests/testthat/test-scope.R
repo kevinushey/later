@@ -23,11 +23,21 @@ test_that("scope_env_vars() sets, resets environment variables", {
   }
 
   Sys.setenv(R_LATER_SET = "initial")
-
   test()
 
   expect_true(Sys.getenv("R_LATER_SET") == "initial")
   expect_true(is.na(Sys.getenv("R_LATER_UNSET", unset = NA)))
+
+  test <- function() {
+    scope_env_vars(R_LIBS_USER = "nowhere in particular")
+    expect_true(Sys.getenv("R_LIBS_USER") == "nowhere in particular")
+  }
+
+  before <- Sys.getenv()
+  after <- Sys.getenv()
+
+  test()
+  expect_identical(before, after)
 
 })
 
@@ -35,7 +45,6 @@ test_that("scope_options() sets, unsets R options", {
 
   warn <- getOption("warn")
   options(later.dummy.option = NULL)
-
 
   test <- function() {
     expect_true(getOption("warn") == warn)
