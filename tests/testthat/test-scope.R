@@ -58,3 +58,16 @@ test_that("scope_options() sets, unsets R options", {
   expect_null(getOption("later.dummy.option"))
 
 })
+
+test_that("scope_dir() evaluates handlers in correct order", {
+
+  test <- function() {
+    # if this evaluates in wrong order, we might get stuck in tempdir
+    scope_dir(tempdir())
+    scope_dir(tempdir())
+  }
+
+  owd <- getwd()
+  test()
+  expect_identical(getwd(), owd)
+})
