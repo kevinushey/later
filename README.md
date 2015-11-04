@@ -2,16 +2,10 @@
 
 [![Travis-CI Build Status](https://travis-ci.org/kevinushey/later.svg?branch=master)](https://travis-ci.org/kevinushey/later)
 
-This package:
+Generalizes `on.exit()` to a function `defer()`, which can attach exit handlers
+to any currently executing function, and uses that to scope side effects.
 
-- generalizes `on.exit()` to a function `defer()`, which can attach exit handlers
-  to any currently executing function,
-
-- uses `defer()` to provide a number of 'scoped' functions: for example,
-  `scope_dir()` sets the current working directory, and then unsets it
-  after the active function has finished execution.
-
-For example:
+## Example
 
 ```r
 list_files <- function(dir) {
