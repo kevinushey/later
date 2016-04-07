@@ -56,12 +56,20 @@ new_handlers <- function() {
   # Public ----
 
   signal <- function(signal, ...) {
+
     handlers <- .handlers(signal)
     for (handler in rev(handlers$get())) {
-      status <- try(handler(...), silent = TRUE)
-      if (identical(status, FALSE))
+
+      stopped <- FALSE
+      status <- withCallingHandlers(
+        try(handler(...), silent = TRUE),
+        stop_propagation = function(e) stopped <<- TRUE
+      )
+
+      if (stopped)
         return(invisible(NULL))
     }
+
     invisible(NULL)
   }
 
@@ -135,4 +143,12 @@ off <- function(signal, id) {
 #' @export
 signal <- function(signal, ...) {
   .__HANDLERS__.$signal(signal, ...)
+}
+
+#' @rdname signals
+#' @name signals
+#' @export
+stop_propagation <- function() {
+  condition <- structure(NULL, class = c("stop_propagation", "condition"))
+  signalCondition(condition)
 }

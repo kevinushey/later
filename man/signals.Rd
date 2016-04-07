@@ -5,6 +5,7 @@
 \alias{on}
 \alias{signal}
 \alias{signals}
+\alias{stop_propagation}
 \title{Signals}
 \usage{
 on(signal, fn, scoped = TRUE)
@@ -12,6 +13,8 @@ on(signal, fn, scoped = TRUE)
 off(signal, id)
 
 signal(signal, ...)
+
+stop_propagation()
 }
 \arguments{
 \item{signal}{The name of a signal, as a string.}

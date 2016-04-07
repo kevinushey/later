@@ -81,8 +81,8 @@ test_that("signals can return FALSE to stop handler execution", {
   })
 
   h1$on("hello", function() {
+    stop_propagation()
     cat("suppressing!\n", sep = "")
-    FALSE
   })
 
   captured <- capture.output(h1$signal("hello"))
