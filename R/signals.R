@@ -1,5 +1,8 @@
 new_handlers <- function() {
 
+  # Private ----
+
+  ## Handlers
   .env <- new.env(parent = emptyenv())
   .handlers <- function(signal) {
     handlers <- .env
@@ -7,6 +10,22 @@ new_handlers <- function() {
       assign(signal, new.env(parent = emptyenv()), envir = handlers)
     get(signal, envir = handlers)
   }
+
+  ## IDs
+  .candidates <- c(letters, LETTERS, 0:9)
+  .generate_id <- function() {
+    paste(sample(.candidates, 32, TRUE), collapse = "")
+  }
+  .ids <- new.env(parent = emptyenv())
+  .id <- function() {
+    id <- .generate_id()
+    while (!is.null(.ids[[id]]))
+      id <- .generate_id()
+    .ids[[id]] <- id
+    id
+  }
+
+  # Public ----
 
   signal <- function(signal, ...) {
     handlers <- .handlers(signal)
@@ -18,7 +37,7 @@ new_handlers <- function() {
 
   on <- function(signal, fn, scoped = TRUE, envir = parent.frame()) {
     handlers <- .handlers(signal)
-    id <- digest::digest(fn)
+    id <- .id()
     handlers[[id]] <- fn
     if (scoped)
       defer(off(signal, id), envir = envir)
