@@ -19,7 +19,7 @@ defer <- function(expr, envir = parent.frame(), priority = c("first", "last")) {
   front <- priority == "first"
 
   call <- substitute(
-    evalq(expr, envir = envir),
+    evalq(try(expr, silent = TRUE), envir = envir),
     list(expr = substitute(expr), envir = parent.frame())
   )
 

@@ -33,3 +33,20 @@ test_that("defer can push handlers to bottom of stack", {
 
 
 })
+
+test_that("errors in defer don't cause terrible things to happen", {
+
+  test <- function() {
+    emit("+ foo")
+    defer(emit("> foo.1"))
+    defer(stop("ouch"))
+    defer(emit("> foo.2"))
+    emit("- foo")
+  }
+
+  output <- capture.output(test())
+  expected <- c("+ foo", "- foo", "> foo.2", "> foo.1")
+  expect_identical(output, expected)
+
+
+})
