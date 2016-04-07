@@ -6,7 +6,7 @@ test_that("signals work and are scoped", {
   # R functions as requested
   counter <- 0
   foo <- function() {
-    on("increment", function() {counter <<- counter + 1})
+    on("increment", function() counter <<- counter + 1)
     signal("increment")
   }
 
@@ -52,4 +52,39 @@ test_that("the same function can be attached to different handlers", {
   captured <- capture.output(h1$signal("hello"))
   expect_identical(captured, "h1 says hello")
 
+})
+
+test_that("signals are run in reverse insertion order", {
+
+  h1 <- new_handlers()
+
+  h1$on("hello", function() cat("hello1\n", sep = ""))
+  h1$on("hello", function() cat("hello2\n", sep = ""))
+
+  captured <- capture.output(h1$signal("hello"))
+  expect_identical(captured, c("hello2", "hello1"))
+
+})
+
+test_that("signals can return FALSE to stop handler execution", {
+
+  h1 <- new_handlers()
+
+  h1$on("hello", function() {
+    cat("shouldn't be emitted", sep = "")
+    TRUE
+  })
+
+  h1$on("hello", function() {
+    cat("shouldn't be emitted", sep = "")
+    TRUE
+  })
+
+  h1$on("hello", function() {
+    cat("suppressing!\n", sep = "")
+    FALSE
+  })
+
+  captured <- capture.output(h1$signal("hello"))
+  expect_identical(captured, "suppressing!")
 })

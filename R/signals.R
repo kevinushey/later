@@ -1,3 +1,31 @@
+new_list <- function() {
+  .data <- list()
+
+  insert = function(key, val) {
+    .data[[key]] <<- val
+  }
+
+  remove <- function(key) {
+    .data[[key]] <<- NULL
+  }
+
+  contains <- function(key) {
+    key %in% names(.data)
+  }
+
+  get <- function() {
+    .data
+  }
+
+  list(
+    insert = insert,
+    remove = remove,
+    contains = contains,
+    get = get
+  )
+
+}
+
 new_handlers <- function() {
 
   # Private ----
@@ -7,7 +35,7 @@ new_handlers <- function() {
   .handlers <- function(signal) {
     handlers <- .env
     if (!exists(signal, envir = handlers))
-      assign(signal, new.env(parent = emptyenv()), envir = handlers)
+      assign(signal, new_list(), envir = handlers)
     get(signal, envir = handlers)
   }
 
@@ -29,16 +57,18 @@ new_handlers <- function() {
 
   signal <- function(signal, ...) {
     handlers <- .handlers(signal)
-    for (handler in objects(handlers)) {
-      handler <- get(handler, envir = handlers)
-      try(handler(...), silent = TRUE)
+    for (handler in rev(handlers$get())) {
+      status <- try(handler(...), silent = TRUE)
+      if (identical(status, FALSE))
+        return(invisible(NULL))
     }
+    invisible(NULL)
   }
 
   on <- function(signal, fn, scoped = TRUE, envir = parent.frame()) {
     handlers <- .handlers(signal)
     id <- .id()
-    handlers[[id]] <- fn
+    handlers$insert(id, fn)
     if (scoped)
       defer(off(signal, id), envir = envir)
     id
@@ -46,7 +76,7 @@ new_handlers <- function() {
 
   off <- function(signal, id) {
     handlers <- .handlers(signal)
-    handlers[[id]] <- NULL
+    handlers$remove(id)
   }
 
   list(signal = signal, on = on, off = off)
