@@ -8,29 +8,29 @@ new_handlers <- function() {
     get(signal, envir = handlers)
   }
 
-  list(
-
-    signal = function(signal, ...) {
-      handlers <- .handlers(signal)
-      for (handler in objects(handlers)) {
-        handler <- get(handler, envir = handlers)
-        try(handler(...), silent = TRUE)
-      }
-    },
-
-    on = function(signal, fn) {
-      handlers <- .handlers(signal)
-      id <- digest::digest(fn)
-      handlers[[id]] <- fn
-      id
-    },
-
-    off = function(signal, id) {
-      handlers <- .handlers(signal)
-      handlers[[id]] <- NULL
+  signal <- function(signal, ...) {
+    handlers <- .handlers(signal)
+    for (handler in objects(handlers)) {
+      handler <- get(handler, envir = handlers)
+      try(handler(...), silent = TRUE)
     }
+  }
 
-  )
+  on <- function(signal, fn, scoped = TRUE, envir = parent.frame()) {
+    handlers <- .handlers(signal)
+    id <- digest::digest(fn)
+    handlers[[id]] <- fn
+    if (scoped)
+      defer(off(signal, id), envir = envir)
+    id
+  }
+
+  off <- function(signal, id) {
+    handlers <- .handlers(signal)
+    handlers[[id]] <- NULL
+  }
+
+  list(signal = signal, on = on, off = off)
 }
 
 .__HANDLERS__. <- new_handlers()
@@ -71,10 +71,7 @@ new_handlers <- function() {
 #' @name signals
 #' @export
 on <- function(signal, fn, scoped = TRUE) {
-  id <- .__HANDLERS__.$on(signal, fn)
-  if (scoped)
-    defer_parent(.__HANDLERS__.$off(signal, id))
-  id
+  .__HANDLERS__.$on(signal, fn, scoped, parent.frame())
 }
 
 #' @rdname signals

@@ -34,3 +34,22 @@ test_that("errors in signal handlers don't stop execution", {
   expect_true(TRUE)
 
 })
+
+test_that("the same function can be attached to different handlers", {
+
+  h1 <- new_handlers()
+  h2 <- new_handlers()
+
+  h1$on("hello", function() {
+    cat("h1 says hello", sep = "")
+  })
+
+  h2$on("hello", function() {
+    cat("h2 says hello", sep = "")
+  })
+
+  # h2 shouldn't respond when h1 receives signal
+  captured <- capture.output(h1$signal("hello"))
+  expect_identical(captured, "h1 says hello")
+
+})
