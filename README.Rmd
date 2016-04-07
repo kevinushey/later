@@ -66,9 +66,9 @@ manager <- function() {
     counter <<- counter + 1
   })
   
-  # Run for 10 milliseconds
+  # Run for 2 milliseconds
   time <- Sys.time()
-  while (Sys.time() - time < 0.01) {
+  while (Sys.time() - time < 0.002) {
     worker <- sample(workers, 1)[[1]]
     worker()
   }

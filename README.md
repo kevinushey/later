@@ -71,9 +71,9 @@ manager <- function() {
     counter <<- counter + 1
   })
   
-  # Run for 10 milliseconds
+  # Run for 2 milliseconds
   time <- Sys.time()
-  while (Sys.time() - time < 0.01) {
+  while (Sys.time() - time < 0.002) {
     worker <- sample(workers, 1)[[1]]
     worker()
   }
@@ -91,11 +91,7 @@ manager()
     ## Received data: '2'
     ## Received data: '5'
     ## Received data: '5'
-    ## Received data: '4'
-    ## Received data: '4'
-    ## Received data: '1'
-    ## Received data: '2'
-    ## Executed 11 tasks.
+    ## Executed 7 tasks.
 
 Inspiration & Credit
 --------------------
