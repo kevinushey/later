@@ -1,5 +1,6 @@
 # TODO: Export this so objects can maintain their
 # own set of handlers
+#' @importFrom R6 R6Class
 Handlers <- R6::R6Class(
 
   "Handlers",
