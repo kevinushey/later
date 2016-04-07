@@ -1,28 +1,105 @@
-# Later -- Scoped Side Effects for R
+
+Later
+=====
+
+Scoped side effects and signals for R.
 
 [![Travis-CI Build Status](https://travis-ci.org/kevinushey/later.svg?branch=master)](https://travis-ci.org/kevinushey/later)
 
-Generalizes `on.exit()` to a function `defer()`, which can attach exit handlers
-to any currently executing function, and uses that to scope side effects.
+This package:
 
-## Example
+-   generalizes `on.exit()` to a function `defer()`, which can attach exit handlers to any currently executing function, and uses that to scope side effects, and
 
-```r
-list_files <- function(dir) {
-  scope_dir(dir)
-  list.files()
+-   provides a simple signal / event system, using event handlers registered through `on()` / `off()`, and events fired through `signal()`.
+
+Scoped Side Effects
+-------------------
+
+The `defer()` primitive generalized `on.exit()`, allowing a function to perform cleanup work after the parent invoking function has finished.
+
+``` r
+scope_dir <- function(dir) {
+  owd <- setwd(dir)
+  defer(setwd(owd), envir = parent.frame())
 }
 ```
 
-This function will enter the directory `dir`, list any files, and then
-automatically return to the previously set working directory at the end of the
-function's execution.
+The `scope_dir()` function can be called to set the working directory, and restore the working directory when the caller is done. For example:
 
-## Inspiration & Credit
+``` r
+in_dir <- function(dir) {
+  scope_dir(dir)
+  print(basename(getwd()))
+}
+print(basename(getwd()))
+```
 
-This package is heavily inspired by Jim Hester's
-[withr](https://github.com/jimhester/withr) package.
+    ## [1] "later"
 
-The main 'trick' that enabled the generalization of `on.exit()` was provided in
-a mailing list post
-here, by Peter Meilstrup: https://stat.ethz.ch/pipermail/r-devel/2013-November/067874.html
+``` r
+in_dir("tests")
+```
+
+    ## [1] "tests"
+
+``` r
+print(basename(getwd()))
+```
+
+    ## [1] "later"
+
+Signals
+-------
+
+Register a signal handler using `on()`, and fire events with `signal()`. Useful for long-range communication between functions / objects.
+
+``` r
+set.seed(1)
+make_worker <- function(i) {
+  force(i)
+  function() {
+    signal("work", i)
+  }
+}
+
+workers <- lapply(seq_len(5), make_worker)
+manager <- function() {
+  
+  counter <- 0
+  on("work", function(data) {
+    cat(sprintf("Received data: '%s'\n", data), sep = "")
+    counter <<- counter + 1
+  })
+  
+  # Run for 10 milliseconds
+  time <- Sys.time()
+  while (Sys.time() - time < 0.01) {
+    worker <- sample(workers, 1)[[1]]
+    worker()
+  }
+  
+  cat(sprintf("Executed %s tasks.\n", counter), sep = "")
+}
+
+manager()
+```
+
+    ## Received data: '2'
+    ## Received data: '2'
+    ## Received data: '3'
+    ## Received data: '5'
+    ## Received data: '2'
+    ## Received data: '5'
+    ## Received data: '5'
+    ## Received data: '4'
+    ## Received data: '4'
+    ## Received data: '1'
+    ## Received data: '2'
+    ## Executed 11 tasks.
+
+Inspiration & Credit
+--------------------
+
+This package is heavily inspired by Jim Hester's [withr](https://github.com/jimhester/withr) package.
+
+The main 'trick' that enabled the generalization of `on.exit()` was provided in a mailing list post here, by Peter Meilstrup: <https://stat.ethz.ch/pipermail/r-devel/2013-November/067874.html>
