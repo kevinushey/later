@@ -1,9 +1,9 @@
 Package: later
 Type: Package
-Title: Scoped Side Effects for R Functions
+Title: Scoped Side Effects and Signals for R
 Version: 0.0.1
 Authors@R: person("Kevin", "Ushey", email = "kevinushey@gmail.com", role = c("aut", "cre"))
-Description: Scoped side effects for R functions.
+Description: Scoped side effects and signals for R.
 License: MIT + file LICENSE
 LazyData: TRUE
 Imports:
