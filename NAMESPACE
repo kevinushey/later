@@ -2,6 +2,8 @@
 
 export(defer)
 export(defer_parent)
+export(on)
 export(scope_dir)
 export(scope_env_vars)
 export(scope_options)
+export(signal)
