@@ -1,18 +1,17 @@
-# TODO: Export this so objects can maintain their
-# own set of handlers
-#' @importFrom R6 R6Class
-Handlers <- R6::R6Class(
+new_handlers <- function() {
 
-  "Handlers",
+  .env <- new.env(parent = emptyenv())
+  .handlers <- function(signal) {
+    handlers <- .env
+    if (!exists(signal, envir = handlers))
+      assign(signal, new.env(parent = emptyenv()), envir = handlers)
+    get(signal, envir = handlers)
+  }
 
-  public = list(
-
-    initialize = function() {
-      private$.handlers <- new.env(parent = emptyenv())
-    },
+  list(
 
     signal = function(signal, ...) {
-      handlers <- private$handlers(signal)
+      handlers <- .handlers(signal)
       for (handler in objects(handlers)) {
         handler <- get(handler, envir = handlers)
         try(handler(...), silent = TRUE)
@@ -20,34 +19,21 @@ Handlers <- R6::R6Class(
     },
 
     on = function(signal, fn) {
-      handlers <- private$handlers(signal)
+      handlers <- .handlers(signal)
       id <- digest::digest(fn)
       handlers[[id]] <- fn
       id
     },
 
     off = function(signal, id) {
-      handlers <- private$handlers(signal)
+      handlers <- .handlers(signal)
       handlers[[id]] <- NULL
     }
 
-  ),
-
-  private = list(
-
-    handlers = function(signal) {
-      handlers <- private$.handlers
-      if (!exists(signal, envir = handlers))
-        assign(signal, new.env(parent = emptyenv()), envir = handlers)
-      get(signal, envir = handlers)
-    },
-
-    .handlers = NULL
   )
+}
 
-)
-
-.__HANDLERS__. <- Handlers$new()
+.__HANDLERS__. <- new_handlers()
 
 #' Signals
 #'

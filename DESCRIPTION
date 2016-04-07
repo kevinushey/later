@@ -6,8 +6,6 @@ Authors@R: person("Kevin", "Ushey", email = "kevinushey@gmail.com", role = c("au
 Description: Scoped side effects and signals for R.
 License: MIT + file LICENSE
 LazyData: TRUE
-Imports:
-    R6
 Suggests:
     testthat
 RoxygenNote: 5.0.1

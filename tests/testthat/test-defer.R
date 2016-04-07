@@ -17,7 +17,6 @@ test_that("defer pushes handlers to top of stack by default", {
 
 })
 
-
 test_that("defer can push handlers to bottom of stack", {
 
   test <- function() {
@@ -30,7 +29,6 @@ test_that("defer can push handlers to bottom of stack", {
   output <- capture.output(test())
   expected <- c("+ foo", "- foo", "> foo.1", "> foo.2")
   expect_identical(output, expected)
-
 
 })
 
@@ -47,6 +45,5 @@ test_that("errors in defer don't cause terrible things to happen", {
   output <- capture.output(test())
   expected <- c("+ foo", "- foo", "> foo.2", "> foo.1")
   expect_identical(output, expected)
-
 
 })
