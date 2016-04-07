@@ -48,7 +48,16 @@ Handlers <- R6::R6Class(
 
 .__HANDLERS__. <- Handlers$new()
 
-#' Event Handling
+#' Signals
+#'
+#' Simple tools for emitting signals (events).
+#'
+#' @param signal The name of a signal, as a string.
+#' @param fn A function to be executed in response to a signal.
+#' @param id A signal id, as returned by \code{on}.
+#' @param scoped Boolean; should this signal handler be scoped
+#'  to the current function body?
+#' @param ... Arguments to be passed to registered signal handlers.
 #'
 #' @examples
 #' # Show how 'on', 'signal' can be used to execute
@@ -74,9 +83,18 @@ Handlers <- R6::R6Class(
 #' @rdname signals
 #' @name signals
 #' @export
-on <- function(signal, fn) {
+on <- function(signal, fn, scoped = TRUE) {
   id <- .__HANDLERS__.$on(signal, fn)
-  defer_parent(.__HANDLERS__.$off(signal, id))
+  if (scoped)
+    defer_parent(.__HANDLERS__.$off(signal, id))
+  id
+}
+
+#' @rdname signals
+#' @name signals
+#' @export
+off <- function(signal, id) {
+  .__HANDLERS__.$off(signal, id)
 }
 
 #' @rdname signals

@@ -2,6 +2,7 @@
 
 export(defer)
 export(defer_parent)
+export(off)
 export(on)
 export(scope_dir)
 export(scope_env_vars)
