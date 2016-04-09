@@ -20,8 +20,10 @@ This package:
 
 ## Scoped Side Effects
 
-The `defer()` primitive generalized `on.exit()`, allowing a function to perform
-cleanup work after the parent invoking function has finished.
+The `defer()` function generalizes `on.exit()`, allowing a function to perform 
+cleanup work after a parent invoking function has finished execution. For
+example, the following `scope_dir(dir)` function can be used to set the
+working directory for duration of a function's execution:
 
 ```{r}
 scope_dir <- function(dir) {
