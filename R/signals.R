@@ -32,11 +32,11 @@ new_handlers <- function() {
 
   ## Handlers
   .env <- new.env(parent = emptyenv())
-  .handlers <- function(signal) {
+  .handlers <- function(emit) {
     handlers <- .env
-    if (!exists(signal, envir = handlers))
-      assign(signal, new_list(), envir = handlers)
-    get(signal, envir = handlers)
+    if (!exists(emit, envir = handlers))
+      assign(emit, new_list(), envir = handlers)
+    get(emit, envir = handlers)
   }
 
   ## IDs
@@ -55,9 +55,9 @@ new_handlers <- function() {
 
   # Public ----
 
-  signal <- function(signal, ...) {
+  emit <- function(emit, ...) {
 
-    handlers <- .handlers(signal)
+    handlers <- .handlers(emit)
     for (handler in rev(handlers$get())) {
 
       stopped <- FALSE
@@ -73,43 +73,44 @@ new_handlers <- function() {
     invisible(NULL)
   }
 
-  on <- function(signal, fn, scoped = TRUE, envir = parent.frame()) {
-    handlers <- .handlers(signal)
+  on <- function(emit, fn, scoped = TRUE, envir = parent.frame()) {
+    handlers <- .handlers(emit)
     id <- .id()
     handlers$insert(id, fn)
     if (scoped)
-      defer(off(signal, id), envir = envir)
+      defer(off(emit, id), envir = envir)
     id
   }
 
-  off <- function(signal, id) {
-    handlers <- .handlers(signal)
+  off <- function(emit, id) {
+    handlers <- .handlers(emit)
     handlers$remove(id)
   }
 
-  list(signal = signal, on = on, off = off)
+  list(emit = emit, on = on, off = off)
 }
 
 .__HANDLERS__. <- new_handlers()
 
-#' Signals
+#' events
 #'
-#' Simple tools for emitting signals (events).
+#' Simple tools for emitting events (events).
 #'
-#' @param signal The name of a signal, as a string.
-#' @param fn A function to be executed in response to a signal.
-#' @param id A signal id, as returned by \code{on}.
-#' @param scoped Boolean; should this signal handler be scoped
+#' @param event The name of a event, as a string.
+#' @param fn A function to be executed in response to a emit.
+#' @param id A handler id, as returned by \code{on}. Use this to
+#'  remove a registered handler with \code{off} later.
+#' @param scoped Boolean; should this event handler be scoped
 #'  to the current function body?
-#' @param ... Arguments to be passed to registered signal handlers.
+#' @param ... Arguments to be passed to registered event handlers.
 #'
 #' @examples
-#' # Show how 'on', 'signal' can be used to execute
+#' # Show how 'on', 'emit' can be used to execute
 #' # R functions as requested
 #' counter <- 0
 #' foo <- function() {
 #'   on("increment", function() { counter <<- counter + 1})
-#'   signal("increment")
+#'   emit("increment")
 #' }
 #'
 #' # Call once -- increment counter to 1
@@ -120,33 +121,33 @@ new_handlers <- function() {
 #' foo()
 #' print(counter)
 #'
-#' # Fire signal with no listener -- no increment
-#' signal("increment")
+#' # Fire emit with no listener -- no increment
+#' emit("increment")
 #' print(counter)
 #'
-#' @rdname signals
-#' @name signals
+#' @rdname events
+#' @name events
 #' @export
-on <- function(signal, fn, scoped = TRUE) {
-  .__HANDLERS__.$on(signal, fn, scoped, parent.frame())
+on <- function(event, fn, scoped = TRUE) {
+  .__HANDLERS__.$on(event, fn, scoped, parent.frame())
 }
 
-#' @rdname signals
-#' @name signals
+#' @rdname events
+#' @name events
 #' @export
-off <- function(signal, id) {
-  .__HANDLERS__.$off(signal, id)
+off <- function(event, id) {
+  .__HANDLERS__.$off(event, id)
 }
 
-#' @rdname signals
-#' @name signals
+#' @rdname events
+#' @name events
 #' @export
-signal <- function(signal, ...) {
-  .__HANDLERS__.$signal(signal, ...)
+emit <- function(event, ...) {
+  .__HANDLERS__.$emit(event, ...)
 }
 
-#' @rdname signals
-#' @name signals
+#' @rdname events
+#' @name events
 #' @export
 stop_propagation <- function() {
   condition <- structure(NULL, class = c("stop_propagation", "condition"))

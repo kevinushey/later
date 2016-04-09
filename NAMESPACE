@@ -2,10 +2,10 @@
 
 export(defer)
 export(defer_parent)
+export(emit)
 export(off)
 export(on)
 export(scope_dir)
 export(scope_env_vars)
 export(scope_options)
-export(signal)
 export(stop_propagation)
