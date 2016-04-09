@@ -51,7 +51,19 @@ print(basename(getwd()))
 Signals
 -------
 
-Register a signal handler using `on()`, and fire events with `signal()`. Useful for long-range communication between functions / objects.
+Register a signal handler using `on("signal", <handler>)`, and fire events with `signal("signal", <data>)`. Useful for long-range communication between functions / objects.
+
+These functions are similar to builtin `R` capabilities: `signalCondition()` allows you to signal a condition, and `withCallingHandlers()` can be used to register handlers for signaled conditions (alongside errors, warnings, and otherwise). The main difference between the system in `later` and in base `R`:
+
+1.  Rather than wrapping the executing expression in `withCallingHandlers()`, you can just call `on()` anywhere in a function's body, and any `signal()`s fired later on in the program's executed will be handled by that handler,
+
+2.  A call to `signal()` can emit *any* kind of data object; you are not limited to `R` conditions,
+
+3.  A registered handler for a signal won't alter control flow (ie, this signal system doesn't have the `restarts` mechanism that `R` uses for 'long jumps'),
+
+4.  Handlers are registered in a stack (so the most recently registered handlers will handle a signal first); and handlers can call `stop_propagation()` to ensure a signal deeper in the stack do not receive the signal.
+
+An example to illustrate, with a set of 'workers' that can call `signal()` when they've completed some work, and a 'manager' that listens for the emitted signals from these workers.
 
 ``` r
 set.seed(1)
@@ -84,14 +96,16 @@ manager <- function() {
 manager()
 ```
 
-    ## Received data: '2'
-    ## Received data: '2'
+    ## Received data: '3'
+    ## Received data: '1'
+    ## Received data: '5'
+    ## Received data: '4'
+    ## Received data: '4'
+    ## Received data: '1'
+    ## Received data: '4'
     ## Received data: '3'
     ## Received data: '5'
-    ## Received data: '2'
-    ## Received data: '5'
-    ## Received data: '5'
-    ## Executed 7 tasks.
+    ## Executed 9 tasks.
 
 Inspiration & Credit
 --------------------
