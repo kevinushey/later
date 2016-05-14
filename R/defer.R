@@ -41,6 +41,13 @@
 #'
 #' # file is deleted as we leave 'local' scope
 #' stopifnot(!file.exists(path))
+#'
+#' # investigate how 'defer' modifies the
+#' # executing function's environment
+#' local({
+#'   scope_file(path)
+#'   print(attributes(environment()))
+#' })
 defer <- function(expr, envir = parent.frame(), priority = c("first", "last")) {
 
   if (identical(envir, .GlobalEnv))
@@ -54,11 +61,14 @@ defer <- function(expr, envir = parent.frame(), priority = c("first", "last")) {
     list(expr = substitute(expr), envir = parent.frame())
   )
 
-  add_handler(envir, call, front)
+  invisible(add_handler(envir, call, front))
 }
 
 #' @rdname defer
 #' @export
 defer_parent <- function(expr, priority = c("first", "last")) {
-  defer(expr, parent.frame(2), priority)
+  eval(substitute(
+    defer(expr, envir, priority),
+    list(expr = substitute(expr), envir = parent.frame(2), priority = priority)
+  ), envir = parent.frame())
 }

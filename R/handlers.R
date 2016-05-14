@@ -29,4 +29,5 @@ add_handler <- function(envir, handler, front) {
     c(get_handlers(envir), handler)
 
   set_handlers(envir, handlers)
+  handler
 }
