@@ -13,6 +13,13 @@
 #'   \code{"first"} or \code{"last"}, relative to any other registered
 #'   handlers on this environment.
 #'
+#' @details
+#'
+#' \code{defer} works by attaching handlers to the requested environment (as an
+#' attribute called \code{"handlers"}), and registering an exit handler that
+#' executes the registered handler when the function associated with the
+#' requested environment finishes execution.
+#'
 #' @family scope-related functions
 #' @export
 #' @examples

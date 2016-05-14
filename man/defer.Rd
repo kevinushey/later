@@ -26,6 +26,12 @@ an expression to be evaluated when exitting any frame currently
 on the stack. This provides a nice mechanism for scoping side
 effects for the duration of a function's execution.
 }
+\details{
+\code{defer} works by attaching handlers to the requested environment (as an
+attribute called \code{"handlers"}), and registering an exit handler that
+executes the registered handler when the function associated with the
+requested environment finishes execution.
+}
 \examples{
 # define a 'scope' function that creates a file, and
 # removes it when the parent function has finished executing
