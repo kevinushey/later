@@ -2,4 +2,4 @@
 ^\.Rproj\.user$
 ^\.travis\.yml$
 ^configure\.R$
-^README\.Rmd$
+^README\.(?:Rmd|html)$

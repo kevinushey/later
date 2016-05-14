@@ -98,16 +98,17 @@ manager <- function() {
 manager()
 ```
 
-    ## Received data: '3'
-    ## Received data: '1'
-    ## Received data: '5'
     ## Received data: '4'
-    ## Received data: '4'
-    ## Received data: '1'
-    ## Received data: '4'
+    ## Received data: '2'
     ## Received data: '3'
     ## Received data: '5'
-    ## Executed 9 tasks.
+    ## Received data: '5'
+    ## Received data: '5'
+    ## Received data: '5'
+    ## Received data: '4'
+    ## Received data: '2'
+    ## Received data: '4'
+    ## Executed 10 tasks.
 
 Inspiration & Credit
 --------------------
