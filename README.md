@@ -20,7 +20,7 @@ The `defer()` function generalizes `on.exit()`, allowing a function to perform c
 ``` r
 scope_dir <- function(dir) {
   owd <- setwd(dir)
-  defer(setwd(owd), envir = parent.frame())
+  defer_parent(setwd(owd))
 }
 ```
 
@@ -48,6 +48,8 @@ print(basename(getwd()))
 
     ## [1] "later"
 
+In effect, `defer()` provides a mechanism for mimicing something like C++ destructors -- you can call a function that registers actions that will be run when the enclosing function has finished execution.
+
 Events
 ------
 
@@ -61,9 +63,9 @@ These functions are similar to builtin `R` capabilities: `signalCondition()` all
 
 3.  A registered handler for an event won't alter control flow (ie, this event system doesn't have the `restarts` mechanism that `R` uses for 'long jumps'),
 
-4.  Handlers are registered in a stack (so the most recently registered handlers will handle an event first); and handlers can call `stop_propagation()` to ensure a handler deeper in the stack does not receive the event.
+4.  Handlers are registered in a stack (so the most recently registered handlers will handle an event first); and handlers can call `stop_propagation()` to ensure a handler deeper in the stack does not receive the event if desired.
 
-An example to illustrate, with a set of 'workers' that can call `emit()` when they've completed some work, and a 'manager' that listens for the emitted signals from these workers.
+An example to illustrate, with a set of 'workers' that can call `emit()` when they've completed some work, and a 'manager' that listens for the emitted events from these workers.
 
 ``` r
 set.seed(1)
@@ -104,7 +106,8 @@ manager()
     ## Received data: '1'
     ## Received data: '4'
     ## Received data: '3'
-    ## Executed 8 tasks.
+    ## Received data: '5'
+    ## Executed 9 tasks.
 
 Inspiration & Credit
 --------------------

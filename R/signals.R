@@ -58,10 +58,9 @@ create_handler_registration <- function() {
   ## Handlers
   .env <- new.env(parent = emptyenv())
   .get_handlers <- function(event) {
-    handlers <- .env
-    if (!exists(event, envir = handlers))
-      assign(event, new_list(), envir = handlers)
-    get(event, envir = handlers)
+    if (!exists(event, envir = .env))
+      assign(event, new_list(), envir = .env)
+    get(event, envir = .env)
   }
 
   ## IDs

@@ -2,7 +2,6 @@
 library(later)
 ```
 
-
 # Later
 
 Scoped side effects and events for R.
@@ -28,13 +27,12 @@ working directory for duration of a function's execution:
 ```{r}
 scope_dir <- function(dir) {
   owd <- setwd(dir)
-  defer(setwd(owd), envir = parent.frame())
+  defer_parent(setwd(owd))
 }
 ```
 
 The `scope_dir()` function can be called to set the working directory, and
 restore the working directory when the caller is done. For example:
-
 
 ```{r}
 in_dir <- function(dir) {
@@ -45,6 +43,10 @@ print(basename(getwd()))
 in_dir("tests")
 print(basename(getwd()))
 ```
+
+In effect, `defer()` provides a mechanism for mimicing something like C++
+destructors -- you can call a function that registers actions that will be
+run when the enclosing function has finished execution.
 
 ## Events
 
@@ -69,11 +71,11 @@ otherwise). The main difference between the system in `later` and in base `R`:
 
 4. Handlers are registered in a stack (so the most recently registered handlers
    will handle an event first); and handlers can call `stop_propagation()` to
-   ensure a handler deeper in the stack does not receive the event.
+   ensure a handler deeper in the stack does not receive the event if desired.
 
 An example to illustrate, with a set of 'workers' that can call `emit()`
 when they've completed some work, and a 'manager' that listens for the
-emitted signals from these workers.
+emitted events from these workers.
 
 ```{r}
 set.seed(1)
