@@ -32,22 +32,24 @@ new_handlers <- function() {
 
   ## Handlers
   .env <- new.env(parent = emptyenv())
-  .handlers <- function(emit) {
+  .get_handlers <- function(event) {
     handlers <- .env
-    if (!exists(emit, envir = handlers))
-      assign(emit, new_list(), envir = handlers)
-    get(emit, envir = handlers)
+    if (!exists(event, envir = handlers))
+      assign(event, new_list(), envir = handlers)
+    get(event, envir = handlers)
   }
 
   ## IDs
   .candidates <- c(letters, LETTERS, 0:9)
+  .ids <- new.env(parent = emptyenv())
+
   .generate_id <- function() {
     paste(sample(.candidates, 32, TRUE), collapse = "")
   }
-  .ids <- new.env(parent = emptyenv())
+
   .id <- function() {
     id <- .generate_id()
-    while (!is.null(.ids[[id]]))
+    while (exists(id, envir = .ids, inherits = FALSE))
       id <- .generate_id()
     .ids[[id]] <- id
     id
@@ -55,14 +57,14 @@ new_handlers <- function() {
 
   # Public ----
 
-  emit <- function(emit, ...) {
+  emit <- function(event, ...) {
 
-    handlers <- .handlers(emit)
+    handlers <- .get_handlers(event)
     for (handler in rev(handlers$get())) {
 
       stopped <- FALSE
       status <- withCallingHandlers(
-        try(handler(...), silent = TRUE),
+        tryCatch(handler(...), error = identity),
         stop_propagation = function(e) stopped <<- TRUE
       )
 
@@ -73,18 +75,18 @@ new_handlers <- function() {
     invisible(NULL)
   }
 
-  on <- function(emit, fn, scoped = TRUE, envir = parent.frame()) {
-    handlers <- .handlers(emit)
+  on <- function(event, fn, scoped = TRUE, envir = parent.frame()) {
+    handlers <- .get_handlers(event)
     id <- .id()
     handlers$insert(id, fn)
     if (scoped)
-      defer(off(emit, id), envir = envir)
+      defer(off(event, id), envir = envir)
     id
   }
 
-  off <- function(emit, id) {
-    handlers <- .handlers(emit)
-    handlers$remove(id)
+  off <- function(event, handler_id) {
+    handlers <- .get_handlers(event)
+    handlers$remove(handler_id)
   }
 
   list(emit = emit, on = on, off = off)
@@ -106,7 +108,9 @@ new_handlers <- function() {
 #'
 #' @examples
 #' # Show how 'on', 'emit' can be used to execute
-#' # R functions as requested
+#' # R functions as requested. Note that the handler registered
+#' # by 'on()' below is active only within that function's body
+#' # -- it is 'destroyed' once 'foo()' finishes execution.
 #' counter <- 0
 #' foo <- function() {
 #'   on("increment", function() { counter <<- counter + 1})

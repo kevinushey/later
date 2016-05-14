@@ -15,6 +15,9 @@
 #' @export
 defer <- function(expr, envir = parent.frame(), priority = c("first", "last")) {
 
+  if (identical(envir, .GlobalEnv))
+    stop("attempt to defer event on global env")
+
   priority <- match.arg(priority)
   front <- priority == "first"
 

@@ -1,6 +1,6 @@
 context("defer")
 
-emit <- function(x) cat(x, sep = "\n")
+emit <- function(...) cat(..., sep = "\n")
 
 test_that("defer pushes handlers to top of stack by default", {
 
@@ -46,4 +46,21 @@ test_that("errors in defer don't cause terrible things to happen", {
   expected <- c("+ foo", "- foo", "> foo.2", "> foo.1")
   expect_identical(output, expected)
 
+})
+
+test_that("defer() evaluates expressions in correct frame", {
+
+  x <- 1
+  test <- function() {
+    y <- 2
+    defer(emit(paste(">", x)))
+    defer(emit(paste(">", y)))
+    defer({
+      tryCatch(emit(z), error = function(e) emit(paste(">", 3)))
+    })
+  }
+
+  output <- capture.output(test())
+  expected <- c("> 3", "> 2", "> 1")
+  expect_identical(output, expected)
 })
