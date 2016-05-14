@@ -38,10 +38,10 @@ scope_file <- function(path) {
 path <- tempfile()
 
 # use 'scope_file' in a function
-(function() {
+local({
   scope_file(path)
   stopifnot(file.exists(path))
-})()
+})
 
 # file is deleted as we leave 'local' scope
 stopifnot(!file.exists(path))

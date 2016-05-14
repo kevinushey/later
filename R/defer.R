@@ -27,17 +27,17 @@
 #' path <- tempfile()
 #'
 #' # use 'scope_file' in a function
-#' (function() {
+#' local({
 #'   scope_file(path)
 #'   stopifnot(file.exists(path))
-#' })()
+#' })
 #'
 #' # file is deleted as we leave 'local' scope
 #' stopifnot(!file.exists(path))
 defer <- function(expr, envir = parent.frame(), priority = c("first", "last")) {
 
   if (identical(envir, .GlobalEnv))
-    stop("attempt to defer event on global env")
+    stop("attempt to defer event on global environment")
 
   priority <- match.arg(priority)
   front <- priority == "first"
