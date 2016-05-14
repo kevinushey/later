@@ -6,7 +6,7 @@
 \alias{off}
 \alias{on}
 \alias{stop_propagation}
-\title{events}
+\title{Events}
 \usage{
 on(event, fn, scoped = TRUE)
 
@@ -30,11 +30,13 @@ remove a registered handler with \code{off} later.}
 \item{...}{Arguments to be passed to registered event handlers.}
 }
 \description{
-Simple tools for emitting events (events).
+Simple tools for emitting and handling events.
 }
 \examples{
 # Show how 'on', 'emit' can be used to execute
-# R functions as requested
+# R functions as requested. Note that the handler registered
+# by 'on()' below is active only within that function's body
+# -- it is 'destroyed' once 'foo()' finishes execution.
 counter <- 0
 foo <- function() {
   on("increment", function() { counter <<- counter + 1})

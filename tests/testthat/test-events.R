@@ -37,8 +37,8 @@ test_that("errors in emit handlers don't stop execution", {
 
 test_that("the same function can be attached to different handlers", {
 
-  h1 <- new_handlers()
-  h2 <- new_handlers()
+  h1 <- create_handler_registration()
+  h2 <- create_handler_registration()
 
   h1$on("hello", function() {
     cat("h1 says hello", sep = "")
@@ -56,7 +56,7 @@ test_that("the same function can be attached to different handlers", {
 
 test_that("events are run in reverse insertion order", {
 
-  h1 <- new_handlers()
+  h1 <- create_handler_registration()
 
   h1$on("hello", function() cat("hello1\n", sep = ""))
   h1$on("hello", function() cat("hello2\n", sep = ""))
@@ -68,7 +68,7 @@ test_that("events are run in reverse insertion order", {
 
 test_that("handlers can stop event propagation", {
 
-  h1 <- new_handlers()
+  h1 <- create_handler_registration()
 
   h1$on("hello", function() {
     cat("shouldn't be emitted", sep = "")

@@ -26,7 +26,15 @@ new_list <- function() {
 
 }
 
-new_handlers <- function() {
+#' Create a New Handler Registration
+#'
+#' Create a new handler registration. Objects generated from this function can
+#' implement the interface described in \code{\link{events}} -- handlers can be
+#' attached and detached with \code{on} / \code{off}. and events can be emitted
+#' with \code{emit}.
+#'
+#' @export
+create_handler_registration <- function() {
 
   # Private ----
 
@@ -92,11 +100,9 @@ new_handlers <- function() {
   list(emit = emit, on = on, off = off)
 }
 
-.__HANDLERS__. <- new_handlers()
-
-#' events
+#' Events
 #'
-#' Simple tools for emitting events (events).
+#' Simple tools for emitting and handling events.
 #'
 #' @param event The name of a event, as a string.
 #' @param fn A function to be executed in response to a emit.
