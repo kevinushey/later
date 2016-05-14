@@ -30,29 +30,42 @@ remove a registered handler with \code{off} later.}
 \item{...}{Arguments to be passed to registered event handlers.}
 }
 \description{
-Simple tools for emitting and handling events.
+Simple tools for emitting and handling events. \code{on} and \code{off} are
+used to register and unregister event handlers, and \code{emit} is used to
+emit an event for registered handlers to handle.
+}
+\details{
+These functions interact with a global handler registration -- if you need to
+define separate handler registrations, you can use
+\code{\link{create_handler_registration}} to generate your own, and call the
+relevant \code{on}, \code{off} and \code{emit} events on that object.
 }
 \examples{
-# Show how 'on', 'emit' can be used to execute
-# R functions as requested. Note that the handler registered
-# by 'on()' below is active only within that function's body
-# -- it is 'destroyed' once 'foo()' finishes execution.
+# use event system in increment a counter
 counter <- 0
 foo <- function() {
   on("increment", function() { counter <<- counter + 1})
   emit("increment")
 }
 
-# Call once -- increment counter to 1
+# call once -- increment counter to 1
 foo()
 print(counter)
 
-# Call again -- increment counter to 2
+# call again -- increment counter to 2
 foo()
 print(counter)
 
-# Fire emit with no listener -- no increment
+# fire event with no listener -- no increment
 emit("increment")
+print(counter)
+
+# generate a new handler registration, and fire an
+# event on that object
+registration <- create_handler_registration()
+registration$emit("increment")
+
+# counter is still 2
 print(counter)
 
 }

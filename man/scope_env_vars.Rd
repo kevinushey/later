@@ -14,4 +14,8 @@ names to values.}
 Set environment variables for the current scope, and resets it
 at the end of the active scope.
 }
+\seealso{
+Other scope.related.functions: \code{\link{defer}},
+  \code{\link{scope_dir}}, \code{\link{scope_options}}
+}
 

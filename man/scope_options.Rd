@@ -13,4 +13,8 @@ scope_options(...)
 Set \R options (through \code{options}) and restore at the
 end of the active scope.
 }
+\seealso{
+Other scope.related.functions: \code{\link{defer}},
+  \code{\link{scope_dir}}, \code{\link{scope_env_vars}}
+}
 

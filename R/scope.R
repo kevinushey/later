@@ -4,7 +4,7 @@
 #' of the active scope.
 #'
 #' @param directory The working directory to use.
-#'
+#' @family scope-related functions
 #' @export
 scope_dir <- function(directory) {
   owd <- setwd(directory)
@@ -18,7 +18,7 @@ scope_dir <- function(directory) {
 #'
 #' @param ... Named arguments, mapping environment variable
 #'   names to values.
-#'
+#' @family scope-related functions
 #' @export
 scope_env_vars <- function(...) {
 
@@ -46,7 +46,7 @@ scope_env_vars <- function(...) {
 #' end of the active scope.
 #'
 #' @param ... Named arguments, mapping option names to values.
-#'
+#' @family scope-related functions
 #' @export
 scope_options <- function(...) {
 

@@ -28,12 +28,29 @@ new_list <- function() {
 
 #' Create a New Handler Registration
 #'
-#' Create a new handler registration. Objects generated from this function can
+#' Create a new handler registration. Objects generated from this function
 #' implement the interface described in \code{\link{events}} -- handlers can be
 #' attached and detached with \code{on} / \code{off}. and events can be emitted
 #' with \code{emit}.
 #'
 #' @export
+#' @examples
+#' # create a handler registration
+#' registration <- create_handler_registration()
+#'
+#' # attach a handler
+#' id <- registration$on("hello", function(data) {
+#'   print(paste("Hello,", data))
+#' }, scoped = FALSE)
+#'
+#' # emit an event -- see 'Hello, world' printed to console
+#' registration$emit("hello", "World")
+#'
+#' # detach event
+#' registration$off("hello", id)
+#'
+#' # emit event again -- nothing printed as no active handler present
+#' registration$emit("hello", "World")
 create_handler_registration <- function() {
 
   # Private ----
@@ -102,7 +119,14 @@ create_handler_registration <- function() {
 
 #' Events
 #'
-#' Simple tools for emitting and handling events.
+#' Simple tools for emitting and handling events. \code{on} and \code{off} are
+#' used to register and unregister event handlers, and \code{emit} is used to
+#' emit an event for registered handlers to handle.
+#'
+#' These functions interact with a global handler registration -- if you need to
+#' define separate handler registrations, you can use
+#' \code{\link{create_handler_registration}} to generate your own, and call the
+#' relevant \code{on}, \code{off} and \code{emit} events on that object.
 #'
 #' @param event The name of a event, as a string.
 #' @param fn A function to be executed in response to a emit.
@@ -113,26 +137,31 @@ create_handler_registration <- function() {
 #' @param ... Arguments to be passed to registered event handlers.
 #'
 #' @examples
-#' # Show how 'on', 'emit' can be used to execute
-#' # R functions as requested. Note that the handler registered
-#' # by 'on()' below is active only within that function's body
-#' # -- it is 'destroyed' once 'foo()' finishes execution.
+#' # use event system in increment a counter
 #' counter <- 0
 #' foo <- function() {
 #'   on("increment", function() { counter <<- counter + 1})
 #'   emit("increment")
 #' }
 #'
-#' # Call once -- increment counter to 1
+#' # call once -- increment counter to 1
 #' foo()
 #' print(counter)
 #'
-#' # Call again -- increment counter to 2
+#' # call again -- increment counter to 2
 #' foo()
 #' print(counter)
 #'
-#' # Fire emit with no listener -- no increment
+#' # fire event with no listener -- no increment
 #' emit("increment")
+#' print(counter)
+#'
+#' # generate a new handler registration, and fire an
+#' # event on that object
+#' registration <- create_handler_registration()
+#' registration$emit("increment")
+#'
+#' # counter is still 2
 #' print(counter)
 #'
 #' @rdname events
@@ -156,10 +185,14 @@ emit <- function(event, ...) {
   .__HANDLERS__.$emit(event, ...)
 }
 
+signal_condition <- function(class = NULL, data = NULL) {
+  condition <- structure(data, class = c(class, "condition"))
+  signalCondition(condition)
+}
+
 #' @rdname events
 #' @name events
 #' @export
 stop_propagation <- function() {
-  condition <- structure(NULL, class = c("stop_propagation", "condition"))
-  signalCondition(condition)
+  signal_condition("stop_propagation")
 }

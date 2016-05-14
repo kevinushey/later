@@ -7,9 +7,27 @@
 create_handler_registration()
 }
 \description{
-Create a new handler registration. Objects generated from this function can
+Create a new handler registration. Objects generated from this function
 implement the interface described in \code{\link{events}} -- handlers can be
 attached and detached with \code{on} / \code{off}. and events can be emitted
 with \code{emit}.
+}
+\examples{
+# create a handler registration
+registration <- create_handler_registration()
+
+# attach a handler
+id <- registration$on("hello", function(data) {
+  print(paste("Hello,", data))
+}, scoped = FALSE)
+
+# emit an event -- see 'Hello, world' printed to console
+registration$emit("hello", "World")
+
+# detach event
+registration$off("hello", id)
+
+# emit event again -- nothing printed as no active handler present
+registration$emit("hello", "World")
 }
 

@@ -1,4 +1,6 @@
+.__HANDLERS__. <- NULL
+
 .onLoad <- function(lib, pkg) {
-  ns <- asNamespace(pkg)
-  assign(".__HANDLERS__.", create_handler_registration(), envir = ns)
+  .__HANDLERS__. <<- create_handler_registration()
+  .__HANDLERS__.
 }
