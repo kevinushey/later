@@ -1,31 +1,3 @@
-new_list <- function() {
-  .data <- list()
-
-  insert = function(key, val) {
-    .data[[key]] <<- val
-  }
-
-  remove <- function(key) {
-    .data[[key]] <<- NULL
-  }
-
-  contains <- function(key) {
-    key %in% names(.data)
-  }
-
-  get <- function() {
-    .data
-  }
-
-  list(
-    insert = insert,
-    remove = remove,
-    contains = contains,
-    get = get
-  )
-
-}
-
 #' Create a New Handler Registration
 #'
 #' Create a new handler registration. Objects generated from this function

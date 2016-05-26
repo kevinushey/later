@@ -51,6 +51,13 @@ local({
 
 # file is deleted as we leave 'local' scope
 stopifnot(!file.exists(path))
+
+# investigate how 'defer' modifies the
+# executing function's environment
+local({
+  scope_file(path)
+  print(attributes(environment()))
+})
 }
 \seealso{
 Other scope.related.functions: \code{\link{scope_dir}},

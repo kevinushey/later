@@ -15,3 +15,34 @@ ensure_all_named <- function(object, msg) {
 
   TRUE
 }
+
+new_list <- function() {
+
+  # Private ----
+  .data <- list()
+
+  # Public ----
+  insert = function(key, val) {
+    .data[[key]] <<- val
+  }
+
+  remove <- function(key) {
+    .data[[key]] <<- NULL
+  }
+
+  contains <- function(key) {
+    key %in% names(.data)
+  }
+
+  get <- function() {
+    .data
+  }
+
+  list(
+    insert = insert,
+    remove = remove,
+    contains = contains,
+    get = get
+  )
+
+}
