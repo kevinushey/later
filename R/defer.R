@@ -49,19 +49,11 @@
 #'   print(attributes(environment()))
 #' })
 defer <- function(expr, envir = parent.frame(), priority = c("first", "last")) {
-
   if (identical(envir, .GlobalEnv))
     stop("attempt to defer event on global environment")
-
   priority <- match.arg(priority)
   front <- priority == "first"
-
-  call <- substitute(
-    evalq(tryCatch(expr, error = identity), envir = envir),
-    list(expr = substitute(expr), envir = parent.frame())
-  )
-
-  invisible(add_handler(envir, call, front))
+  invisible(add_handler(envir, later(substitute(expr), parent.frame()), front))
 }
 
 #' @rdname defer
@@ -79,8 +71,7 @@ defer_parent <- function(expr, priority = c("first", "last")) {
 ## those handlers get executed on exit.
 
 get_handlers <- function(envir) {
-  result <- attr(envir, "handlers")
-  if (!is.list(result)) list() else result
+  as.list(attr(envir, "handlers"))
 }
 
 set_handlers <- function(envir, handlers) {
@@ -95,15 +86,29 @@ set_handlers <- function(envir, handlers) {
 execute_handlers <- function(envir) {
   handlers <- get_handlers(envir)
   for (handler in handlers)
-    eval(handler)
+    tryCatch(eval(handler$expr, handler$envir), error = identity)
 }
 
 add_handler <- function(envir, handler, front) {
+
   handlers <- if (front)
-    c(handler, get_handlers(envir))
+    c(list(handler), get_handlers(envir))
   else
-    c(get_handlers(envir), handler)
+    c(get_handlers(envir), list(handler))
 
   set_handlers(envir, handlers)
   handler
+}
+
+later <- function(expr, envir = .GlobalEnv) {
+  `class<-`(list(expr = expr, envir = envir), "later")
+}
+
+#' @export
+print.later <- function(x, ...) {
+  cat(sprintf(
+    "<later>\n  expr:  %s\n  envir: %s\n",
+    format(x$expr),
+    format(x$envir)
+  ))
 }
