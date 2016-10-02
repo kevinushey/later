@@ -59,3 +59,20 @@ scope_options <- function(...) {
   defer_parent(do.call(base::options, opts))
 
 }
+
+#' Scope with Locale
+#'
+#' Set aspects of the current locale and restore the original locale at the
+#' end of the active scope. See \code{\link{Sys.getlocale}()} and
+#' \code{\link{Sys.setlocale}()} for more information.
+#'
+#' @param category The locale aspect, as a character string.
+#' @param locale The locale name.
+#'
+#' @family scope-related functions
+#' @export
+scope_locale <- function(category = "LC_COLLATE", locale) {
+  original <- Sys.getlocale(category = category)
+  Sys.setlocale(category = category, locale = locale)
+  defer_parent(Sys.setlocale(category = category, locale = original))
+}

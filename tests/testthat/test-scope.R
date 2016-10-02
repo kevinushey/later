@@ -71,3 +71,16 @@ test_that("scope_dir() evaluates handlers in correct order", {
   test()
   expect_identical(getwd(), owd)
 })
+
+test_that("scope_locale() can be used to implement C-locale sorting", {
+
+  sort_c <- function(x) {
+    scope_locale(locale = "C")
+    sort(x)
+  }
+
+  locale <- Sys.getlocale()
+  data <- c(0:9, LETTERS, letters)
+  expect_identical(sort_c(data), data)
+  expect_identical(Sys.getlocale(), locale)
+})

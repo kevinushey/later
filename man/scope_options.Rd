@@ -15,6 +15,7 @@ end of the active scope.
 }
 \seealso{
 Other scope-related functions: \code{\link{defer}},
-  \code{\link{scope_dir}}, \code{\link{scope_env_vars}}
+  \code{\link{scope_dir}}, \code{\link{scope_env_vars}},
+  \code{\link{scope_locale}}
 }
 
