@@ -16,6 +16,6 @@ of the active scope.
 \seealso{
 Other scope-related functions: \code{\link{defer}},
   \code{\link{scope_env_vars}}, \code{\link{scope_locale}},
-  \code{\link{scope_options}}
+  \code{\link{scope_options}}, \code{\link{scope_path}}
 }
 

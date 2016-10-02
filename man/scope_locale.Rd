@@ -19,6 +19,6 @@ end of the active scope. See \code{\link{Sys.getlocale}()} and
 \seealso{
 Other scope-related functions: \code{\link{defer}},
   \code{\link{scope_dir}}, \code{\link{scope_env_vars}},
-  \code{\link{scope_options}}
+  \code{\link{scope_options}}, \code{\link{scope_path}}
 }
 

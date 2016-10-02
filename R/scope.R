@@ -76,3 +76,18 @@ scope_locale <- function(category = "LC_COLLATE", locale) {
   Sys.setlocale(category = category, locale = locale)
   defer_parent(Sys.setlocale(category = category, locale = original))
 }
+
+#' Scope with Path
+#'
+#' Set the \code{PATH} environment variable for the duration
+#' of the active scope.
+#'
+#' @param path A vector of paths.
+#'
+#' @family scope-related functions
+#' @export
+scope_path <- function(path) {
+  original <- Sys.getenv("PATH")
+  Sys.setenv(PATH = paste(path, collapse = .Platform$path.sep))
+  defer_parent(Sys.setenv(PATH = original))
+}
