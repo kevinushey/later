@@ -91,7 +91,7 @@ create_handler_registration <- function() {
 #' Events
 #'
 #' Simple tools for emitting and handling events. \code{on} and \code{off} are
-#' used to register and unregister event handlers, and \code{emit} is used to
+#' used to register and deregister event handlers, and \code{emit} is used to
 #' emit an event for registered handlers to handle.
 #'
 #' These functions interact with a global handler registration -- if you need to

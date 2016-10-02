@@ -2,7 +2,7 @@
 % Please edit documentation in R/scope.R
 \name{scope_path}
 \alias{scope_path}
-\title{Scope with PATH}
+\title{Scope with Path}
 \usage{
 scope_path(path)
 }

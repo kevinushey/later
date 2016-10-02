@@ -31,7 +31,7 @@ remove a registered handler with \code{off} later.}
 }
 \description{
 Simple tools for emitting and handling events. \code{on} and \code{off} are
-used to register and unregister event handlers, and \code{emit} is used to
+used to register and deregister event handlers, and \code{emit} is used to
 emit an event for registered handlers to handle.
 }
 \details{
