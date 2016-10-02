@@ -106,9 +106,6 @@ later <- function(expr, envir = .GlobalEnv) {
 
 #' @export
 print.later <- function(x, ...) {
-  cat(sprintf(
-    "<later>\n  expr:  %s\n  envir: %s\n",
-    format(x$expr),
-    format(x$envir)
-  ))
+  fmt <- "<later>\n  expr:  %s\n  envir: %s\n"
+  cat(sprintf(fmt, format(x$expr), format(x$envir)))
 }
