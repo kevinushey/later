@@ -14,7 +14,7 @@ Sets the working directory, and resets it at the end
 of the active scope.
 }
 \seealso{
-Other scope.related.functions: \code{\link{defer}},
+Other scope-related functions: \code{\link{defer}},
   \code{\link{scope_env_vars}}, \code{\link{scope_options}}
 }
 

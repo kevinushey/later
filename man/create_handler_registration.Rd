@@ -8,9 +8,9 @@ create_handler_registration()
 }
 \description{
 Create a new handler registration. Objects generated from this function
-implement the interface described in \code{\link{events}} -- handlers can be
-attached and detached with \code{on} / \code{off}. and events can be emitted
-with \code{emit}.
+implement the interface described in \code{\link{events}} -- handlers can
+be attached and detached with \code{on} / \code{off}. and events can be
+emitted with \code{emit}.
 }
 \examples{
 # create a handler registration

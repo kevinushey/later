@@ -8,4 +8,4 @@ License: MIT + file LICENSE
 LazyData: TRUE
 Suggests:
     testthat
-RoxygenNote: 5.0.1
+RoxygenNote: 5.0.1.9000

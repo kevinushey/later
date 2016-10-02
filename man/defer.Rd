@@ -60,7 +60,7 @@ local({
 })
 }
 \seealso{
-Other scope.related.functions: \code{\link{scope_dir}},
+Other scope-related functions: \code{\link{scope_dir}},
   \code{\link{scope_env_vars}}, \code{\link{scope_options}}
 }
 
