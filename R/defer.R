@@ -75,9 +75,9 @@ get_handlers <- function(envir) {
 }
 
 set_handlers <- function(envir, handlers) {
+  has_handlers <- !is.null(attr(envir, "handlers"))
   attr(envir, "handlers") <- handlers
-  if (is.null(attr(envir, "has_handlers"))) {
-    attr(envir, "has_handlers") <- TRUE
+  if (!has_handlers) {
     call <- make_call(execute_handlers, envir)
     do.call(base::on.exit, list(substitute(call), TRUE), envir = envir)
   }
