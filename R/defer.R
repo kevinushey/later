@@ -75,7 +75,7 @@ get_handlers <- function(envir) {
 }
 
 set_handlers <- function(envir, handlers) {
-  has_handlers <- !is.null(attr(envir, "handlers"))
+  has_handlers <- "handlers" %in% names(attributes(envir))
   attr(envir, "handlers") <- handlers
   if (!has_handlers) {
     call <- make_call(execute_handlers, envir)
